@@ -1,8 +1,6 @@
 {
-  "name": "konferenca-attendance",
-  "version": "1.0.0",
-  "type": "module",
-  "dependencies": {
-    "nodemailer": "^6.9.9"
-  }
+  "outputDirectory": "public",
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/$1" }
+  ]
 }
