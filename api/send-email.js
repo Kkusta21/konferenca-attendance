@@ -1,20 +1,19 @@
+import nodemailer from 'nodemailer';
+
 export default async function handler(req, res) {
-  // Only allow POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   const { name, email, code } = req.body;
-
   if (!name || !email || !code) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
-  const BREVO_API_KEY = process.env.BREVO_API_KEY;
-  const SENDER_EMAIL  = process.env.SENDER_EMAIL;
-  const SENDER_NAME   = process.env.SENDER_NAME || 'Konferenca';
+  const GMAIL_USER = process.env.GMAIL_USER;
+  const GMAIL_PASS = process.env.GMAIL_PASS;
+  const SENDER_NAME = process.env.SENDER_NAME || 'Konferenca';
 
-  // Build QR code URL using a free public API
   const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(code)}`;
 
   const html = `
@@ -49,26 +48,22 @@ export default async function handler(req, res) {
   </div>`;
 
   try {
-    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
-      method: 'POST',
-      headers: {
-        'api-key': BREVO_API_KEY,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        sender: { name: SENDER_NAME, email: SENDER_EMAIL },
-        to: [{ email, name }],
-        subject: `🎫 Karta Juaj e Hyrjes — ${SENDER_NAME}`,
-        htmlContent: html
-      })
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: GMAIL_USER,
+        pass: GMAIL_PASS
+      }
     });
 
-    if (response.ok) {
-      return res.status(200).json({ success: true });
-    } else {
-      const err = await response.json();
-      return res.status(500).json({ error: err.message || 'Email send failed' });
-    }
+    await transporter.sendMail({
+      from: `"${SENDER_NAME}" <${GMAIL_USER}>`,
+      to: email,
+      subject: `🎫 Karta Juaj e Hyrjes — ${SENDER_NAME}`,
+      html
+    });
+
+    return res.status(200).json({ success: true });
   } catch (e) {
     return res.status(500).json({ error: e.message });
   }
