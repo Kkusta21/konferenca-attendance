@@ -29,7 +29,7 @@
   }
 
   async function sendEmail(name, email, code) {
-    const res = await fetch('/api/send-email', {
+    const res = await fetch('https://konferenca-attendance.vercel.app/api/send-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, code })
