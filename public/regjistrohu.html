@@ -64,7 +64,6 @@
       document.getElementById('success').style.display   = 'block';
       document.getElementById('suc-name').textContent = name;
       document.getElementById('suc-code').textContent = code;
-      // Show QR
       const d = document.getElementById('suc-qr'); d.innerHTML = '';
       new QRCode(d, { text:code, width:190, height:190, colorDark:'#000', colorLight:'#fff', correctLevel:QRCode.CorrectLevel.H });
     } catch(e) {
@@ -117,7 +116,6 @@ input:focus{border-color:var(--accent)}
     <h1>Regjistrohu</h1>
     <p class="sub">Plotëso emrin dhe emailin tënd.<br>Do të marrësh një kod QR unik për gjithë konferencën.</p>
   </header>
-
   <div id="form-wrap">
     <div class="banner">
       <span style="font-size:1.2rem;flex-shrink:0">🎫</span>
@@ -140,7 +138,6 @@ input:focus{border-color:var(--accent)}
     </div>
     <p class="note">Pas regjistrimit do të merrni kodin QR direkt në email.</p>
   </div>
-
   <div id="success">
     <div class="sicon">🎉</div>
     <div class="stitle">Regjistrimi u krye!</div>
